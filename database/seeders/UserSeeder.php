@@ -28,7 +28,7 @@ class UserSeeder extends Seeder
                 [
                     'name' => 'Super Administrator',
                     'password' => Hash::make('Admin@1234'),
-                    'phone' => '1234567890',
+                    'phone' => '+91 99999 88888',
                     'status' => 'active',
                     'school_id' => null,
                 ]
