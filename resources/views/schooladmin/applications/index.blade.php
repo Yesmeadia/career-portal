@@ -118,6 +118,22 @@
                                 style="font-size:16px;">expand_more</span>
                         </div>
 
+                        <div class="relative min-w-[160px]">
+                            <span
+                                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                                style="font-size:16px;">category</span>
+                            <select name="application_type"
+                                class="w-full bg-white border border-gray-200 text-[13px] text-gray-700 pl-9 pr-8 py-2.5 appearance-none focus:outline-none focus:ring-2 focus:ring-[#21255e]/10 transition-all cursor-pointer"
+                                style="border-radius: 12px;">
+                                <option value="">All Types</option>
+                                <option value="vacancy" {{ ($filters['application_type'] ?? '') === 'vacancy' ? 'selected' : '' }}>Job Vacancy App</option>
+                                <option value="general" {{ ($filters['application_type'] ?? '') === 'general' ? 'selected' : '' }}>General Application</option>
+                            </select>
+                            <span
+                                class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                                style="font-size:16px;">expand_more</span>
+                        </div>
+
                         <div class="h-8 w-px bg-gray-200 hidden sm:block"></div>
 
                         <button type="submit"
@@ -145,24 +161,18 @@
                 <table class="w-full text-left" style="border-collapse: separate; border-spacing: 0;">
                     <thead>
                         <tr style="background: #f8fafc;">
-                            <th
-                                class="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                            <th class="px-5 py-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100">
                                 Candidate</th>
-                            <th
-                                class="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                            <th class="px-5 py-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100">
                                 Position Applied</th>
-                            <th
-                                class="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                            <th class="px-5 py-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100">
                                 Qualification</th>
-                            <th
-                                class="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                            <th class="px-5 py-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100">
                                 Status</th>
-                            <th
-                                class="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
-                                Date Applied</th>
-                            <th
-                                class="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100 text-right">
-                                View</th>
+                            <th class="px-5 py-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                                Applied Date</th>
+                            <th class="px-5 py-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100 text-right">
+                                Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -205,12 +215,21 @@
                                 </td>
 
                                 <td class="px-5 py-3.5 border-b border-gray-50">
-                                    <p class="font-semibold text-[#111827]" style="font-size:13px;">
-                                        {{ Str::limit($app->vacancy?->title ?? 'General Application', 30) }}
-                                    </p>
-                                    <p class="text-[11px] text-gray-400 mt-0.5">
-                                        {{ $app->vacancy?->department->name ?? 'General Dept' }}
-                                    </p>
+                                    @if($app->isGeneral())
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                            <span class="material-symbols-outlined text-[12px]">stars</span> General App
+                                        </span>
+                                        <p class="text-[11px] text-gray-500 mt-1 font-medium truncate max-w-[180px]" title="{{ $app->preferred_position ?: 'Open Role' }}">
+                                            {{ $app->preferred_position ?: ($app->preferred_department ?: 'Open Placement') }}
+                                        </p>
+                                    @else
+                                        <p class="font-semibold text-[#111827]" style="font-size:13px;">
+                                            {{ Str::limit($app->vacancy?->title ?? 'Position', 30) }}
+                                        </p>
+                                        <p class="text-[11px] text-gray-400 mt-0.5">
+                                            {{ $app->vacancy?->department?->name ?? 'General Dept' }}
+                                        </p>
+                                    @endif
                                 </td>
 
                                 <td class="px-5 py-3.5 border-b border-gray-50">

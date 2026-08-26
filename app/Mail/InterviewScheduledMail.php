@@ -20,7 +20,7 @@ class InterviewScheduledMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Interview Invitation - ' . $this->interview->application->vacancy->title,
+            subject: 'Interview Invitation - ' . $this->interview->application->display_position,
         );
     }
 

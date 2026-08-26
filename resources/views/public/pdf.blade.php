@@ -400,11 +400,11 @@
                     </tr>
                     <tr>
                         <td class="label-cell">Applied Role:</td>
-                        <td class="value-cell">{{ $application->vacancy->title ?? 'N/A' }}</td>
+                        <td class="value-cell">{{ $application->vacancy?->title ?? ($application->preferred_position ?: 'General Application') }}</td>
                     </tr>
                     <tr>
                         <td class="label-cell">Department:</td>
-                        <td class="value-cell">{{ $application->vacancy->department->name ?? 'General' }}</td>
+                        <td class="value-cell">{{ $application->vacancy?->department?->name ?? ($application->preferred_department ?: 'General / Open Placement') }}</td>
                     </tr>
                     <tr>
                         <td class="label-cell">Submission Date:</td>

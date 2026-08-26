@@ -23,7 +23,7 @@
 
         <h2>You Are Invited for an Interview!</h2>
         <p>Dear {{ $interview->application->first_name }},</p>
-        <p>We are pleased to invite you for an interview for the role of <strong>{{ $interview->application->vacancy->title }}</strong>.</p>
+        <p>We are pleased to invite you for an interview for <strong>{{ $interview->application->display_position }}</strong>.</p>
 
         <div class="details">
             <div class="details-item">

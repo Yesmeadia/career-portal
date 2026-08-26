@@ -28,6 +28,10 @@
             <div
                 class="flex flex-wrap justify-center md:justify-end gap-4 text-secondary dark:text-secondary-fixed-dim font-label-sm text-label-sm">
                 <a class="hover:text-emerald-600 dark:hover:text-electric-green transition-colors opacity-90 hover:opacity-100"
+                    href="{{ route('vacancies.index') }}">Find Jobs</a>
+                <a class="hover:text-emerald-600 dark:hover:text-electric-green transition-colors opacity-90 hover:opacity-100"
+                    href="{{ route('applications.general') }}">General Application</a>
+                <a class="hover:text-emerald-600 dark:hover:text-electric-green transition-colors opacity-90 hover:opacity-100"
                     href="{{ route('privacy') }}">Privacy Policy</a>
                 <a class="hover:text-emerald-600 dark:hover:text-electric-green transition-colors opacity-90 hover:opacity-100"
                     href="{{ route('terms') }}">Terms of Service</a>

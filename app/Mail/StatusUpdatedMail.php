@@ -28,16 +28,18 @@ class StatusUpdatedMail extends Mailable
 
     public function envelope(): Envelope
     {
-        $schoolName = $this->application->school->name ?? 'Career Portal';
+        $schoolName = $this->application->school?->name ?? ($this->application->vacancy?->school?->name ?? 'Career Portal');
+        $positionTitle = $this->application->display_position;
+
         if ($this->newStatus === 'interview_scheduled') {
             return new Envelope(
-                subject: "Interview Invitation & Schedule Details - {$this->application->vacancy->title} ({$this->application->reference_no})",
+                subject: "Interview Invitation & Schedule Details - {$positionTitle} ({$this->application->reference_no})",
             );
         }
 
         $statusFormatted = ucwords(str_replace('_', ' ', $this->newStatus));
         return new Envelope(
-            subject: "Update on Your Application [{$statusFormatted}] - {$this->application->vacancy->title} ({$this->application->reference_no})",
+            subject: "Update on Your Application [{$statusFormatted}] - {$positionTitle} ({$this->application->reference_no})",
         );
     }
 

@@ -65,7 +65,7 @@
                     </div>
                     <div class="details-row">
                         <div class="details-label">Applied For</div>
-                        <div class="details-value">{{ $application->vacancy->title ?? 'N/A' }}</div>
+                        <div class="details-value">{{ $application->display_position }}</div>
                     </div>
                     <div class="details-row">
                         <div class="details-label">Email</div>

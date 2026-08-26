@@ -257,7 +257,7 @@
                                         class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 uppercase">{{ $interview->location_type }}</span>
                                 </div>
                                 <p class="text-[11px] text-gray-500 truncate font-medium">
-                                    {{ $interview->application->vacancy->title }}
+                                    {{ $interview->application->display_position }}
                                 </p>
                                 <div class="text-[11px] font-semibold text-blue-700 flex items-center gap-1 pt-1">
                                     <span>{{ $interview->scheduled_date->format('M d') }} &bull;

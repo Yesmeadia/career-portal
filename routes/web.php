@@ -13,6 +13,11 @@ Route::get('/vacancies/{slug}', [PublicCareerController::class, 'show'])->name('
 
 Route::get('/apply/{vacancy:slug}', [PublicApplicationController::class, 'create'])->name('applications.create');
 Route::post('/apply', [PublicApplicationController::class, 'store'])->name('applications.store');
+
+Route::get('/general-application', [PublicApplicationController::class, 'createGeneral'])->name('applications.general');
+Route::post('/general-application', [PublicApplicationController::class, 'storeGeneral'])->name('applications.store-general');
+Route::get('/apply-general', fn() => redirect()->route('applications.general'));
+
 Route::get('/apply/success/{referenceNo}', [PublicApplicationController::class, 'success'])->name('applications.success');
 Route::get('/track-application', [PublicApplicationController::class, 'track'])->name('applications.track');
 
@@ -83,6 +88,10 @@ Route::middleware(['auth', 'role:Super Admin'])->prefix('super-admin')->name('su
 
     Route::get('/audit-logs', [SuperAdmin\AuditLogController::class, 'index'])->name('audit-logs.index');
     Route::get('/audit', [SuperAdmin\AuditLogController::class, 'index'])->name('audit.index');
+
+    // Admin Users (Super Admin Management)
+    Route::resource('admins', SuperAdmin\AdminUserController::class)->except(['create', 'edit', 'show']);
+    Route::patch('admins/{admin}/toggle-status', [SuperAdmin\AdminUserController::class, 'toggleStatus'])->name('admins.toggle-status');
 
     // Applications
     Route::get('/applications', [SuperAdmin\ApplicationController::class, 'index'])->name('applications.index');

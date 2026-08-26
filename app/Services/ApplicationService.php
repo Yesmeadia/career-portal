@@ -20,14 +20,18 @@ class ApplicationService
     {
         // Duplicate application check
         if ($this->applicationRepository->checkDuplicate($dto->vacancy_id, $dto->email, $dto->phone)) {
+            $msg = $dto->vacancy_id
+                ? 'An application with this email or phone number has already been submitted for this vacancy.'
+                : 'A general application with this email or phone number has already been submitted recently.';
             throw ValidationException::withMessages([
-                'email' => 'An application with this email or phone number has already been submitted for this vacancy.',
+                'email' => $msg,
             ]);
         }
 
         $application = $this->applicationRepository->create($dto->toArray());
 
-        ActivityLog::record("Application submitted by {$application->full_name} ({$application->reference_no})", $application, 'applications');
+        $typeLabel = $application->isGeneral() ? ' [General Application]' : '';
+        ActivityLog::record("Application submitted by {$application->full_name} ({$application->reference_no}){$typeLabel}", $application, 'applications');
 
         event(new ApplicationSubmitted($application));
 

@@ -20,7 +20,7 @@ class CampusNotificationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'New Application Received: ' . $this->application->full_name . ' for ' . $this->application->vacancy->title,
+            subject: 'New Application Received: ' . $this->application->full_name . ' for ' . $this->application->display_position,
         );
     }
 

@@ -42,7 +42,7 @@ class SendApplicationSubmittedListener
                         'type'         => 'candidate_submission_confirmation',
                         'email'        => $application->email,
                         'reference_no' => $application->reference_no,
-                        'vacancy'      => $application->vacancy?->title,
+                        'vacancy'      => $application->display_position,
                     ],
                     'ip_address'   => request()->ip(),
                     'user_agent'   => request()->userAgent(),
@@ -54,7 +54,7 @@ class SendApplicationSubmittedListener
 
         // 2. Send notification email to campus / school admin (only if campus email is distinct from candidate email)
         try {
-            $campusEmail = $application->school->email ?? config('mail.from.address');
+            $campusEmail = $application->school?->email ?? config('mail.from.address');
             if ($campusEmail && strtolower(trim($campusEmail)) !== strtolower(trim($application->email))) {
                 Mail::to($campusEmail)->send(new CampusNotificationMail($application));
 

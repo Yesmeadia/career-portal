@@ -93,6 +93,22 @@
                                 style="font-size:16px;">expand_more</span>
                         </div>
 
+                        <div class="relative min-w-[160px]">
+                            <span
+                                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                                style="font-size:16px;">category</span>
+                            <select name="application_type"
+                                class="w-full bg-white border border-gray-200 text-[13px] text-gray-700 pl-9 pr-8 py-2.5 appearance-none focus:outline-none focus:ring-2 transition-all cursor-pointer"
+                                style="border-radius: 12px;">
+                                <option value="">All Types</option>
+                                <option value="vacancy" {{ ($filters['application_type'] ?? '') === 'vacancy' ? 'selected' : '' }}>Vacancy Applications</option>
+                                <option value="general" {{ ($filters['application_type'] ?? '') === 'general' ? 'selected' : '' }}>General Applications</option>
+                            </select>
+                            <span
+                                class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                                style="font-size:16px;">expand_more</span>
+                        </div>
+
                         <div class="h-8 w-px bg-gray-200 hidden sm:block"></div>
 
                         <button type="submit"
@@ -110,40 +126,25 @@
                                 Clear
                             </a>
                         @endif
-
                     </div>
                 </form>
             </div>
 
-            {{-- Applications Table --}}
+            {{-- Table --}}
             <div class="overflow-x-auto">
-                <table class="w-full text-left" style="border-collapse: separate; border-spacing: 0;">
+                <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr style="background: #f8fafc;">
-                            <th
-                                class="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
-                                Candidate</th>
-                            <th
-                                class="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
-                                School</th>
-                            <th
-                                class="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
-                                Position Applied</th>
-                            <th
-                                class="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
-                                Qualification</th>
-                            <th
-                                class="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
-                                Status</th>
-                            <th
-                                class="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
-                                Date Applied</th>
-                            <th
-                                class="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100 text-right">
-                                View</th>
+                        <tr class="border-b border-gray-100" style="background-color: #f8fafc;">
+                            <th class="px-5 py-3.5 text-[11px] font-bold text-gray-400 uppercase tracking-wider">Candidate</th>
+                            <th class="px-5 py-3.5 text-[11px] font-bold text-gray-400 uppercase tracking-wider">School / Campus</th>
+                            <th class="px-5 py-3.5 text-[11px] font-bold text-gray-400 uppercase tracking-wider">Target Position</th>
+                            <th class="px-5 py-3.5 text-[11px] font-bold text-gray-400 uppercase tracking-wider">Qualification / Exp</th>
+                            <th class="px-5 py-3.5 text-[11px] font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                            <th class="px-5 py-3.5 text-[11px] font-bold text-gray-400 uppercase tracking-wider">Applied</th>
+                            <th class="px-5 py-3.5 text-[11px] font-bold text-gray-400 uppercase tracking-wider text-right">Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-gray-50">
                         @forelse($applications as $index => $app)
                             @php
                                 $badgeClass = match ($app->status) {
@@ -181,30 +182,31 @@
 
                                 <td class="px-5 py-3.5 border-b border-gray-50">
                                     <p class="font-semibold text-[#111827]" style="font-size:13px;">
-                                        {{ Str::limit($app->school?->name ?? 'N/A', 28) }}</p>
-                                    <p class="text-[11px] text-gray-400 mt-0.5">{{ $app->school?->city ?? '—' }}</p>
+                                        {{ Str::limit($app->school?->name ?? 'All Campuses (General)', 28) }}</p>
+                                    <p class="text-[11px] text-gray-400 mt-0.5">{{ $app->school?->city ?? 'Central Pool' }}</p>
                                 </td>
 
                                 <td class="px-5 py-3.5 border-b border-gray-50">
-                                    <p class="font-semibold text-[#111827]" style="font-size:13px;">
-                                        {{ Str::limit($app->vacancy?->title ?? 'General Application', 26) }}</p>
-                                    <p class="text-[11px] text-gray-400 mt-0.5">
-                                        {{ $app->vacancy?->subject ?? 'Teaching/Staff' }}</p>
+                                    @if($app->isGeneral())
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                            <span class="material-symbols-outlined text-[12px]">stars</span> General App
+                                        </span>
+                                        <p class="text-[11px] text-gray-500 mt-1 font-medium truncate max-w-[180px]" title="{{ $app->preferred_position ?: 'Open Role' }}">
+                                            {{ $app->preferred_position ?: ($app->preferred_department ?: 'Open Placement') }}
+                                        </p>
+                                    @else
+                                        <p class="font-semibold text-[#111827]" style="font-size:13px;">
+                                            {{ Str::limit($app->vacancy?->title ?? 'Position', 26) }}</p>
+                                        <p class="text-[11px] text-gray-400 mt-0.5">
+                                            {{ $app->vacancy?->department?->name ?? 'Teaching/Staff' }}</p>
+                                    @endif
                                 </td>
 
                                 <td class="px-5 py-3.5 border-b border-gray-50">
                                     <p class="font-medium text-[#111827]" style="font-size:13px;">
                                         {{ $app->highest_qualification ?? 'N/A' }}</p>
                                     <p class="text-[11px] text-gray-400 mt-0.5">
-                                        @if($app->total_experience_years)
-                                            <span class="inline-flex items-center gap-1">
-                                                <span class="material-symbols-outlined"
-                                                    style="font-size:11px;color:#94a3b8;">work_history</span>
-                                                {{ $app->total_experience_years }} yrs exp
-                                            </span>
-                                        @else
-                                            <span class="text-blue-400 font-medium">Fresh Graduate</span>
-                                        @endif
+                                        {{ $app->experience_years ?: 'Fresher' }}
                                     </p>
                                 </td>
 
@@ -220,35 +222,22 @@
 
                                 <td class="px-5 py-3.5 border-b border-gray-50">
                                     <p class="text-[13px] font-medium text-gray-700">{{ $app->created_at->format('d M Y') }}</p>
-                                    <p class="text-[11px] text-gray-400">{{ $app->created_at->diffForHumans() }}</p>
                                 </td>
 
                                 <td class="px-5 py-3.5 border-b border-gray-50 text-right">
                                     <a href="{{ route('superadmin.applications.show', $app) }}"
-                                        class="inline-flex items-center gap-1.5 text-[12px] font-bold text-[#21255E] hover:text-white transition-all px-3 py-1.5 border border-[#21255E]/20 hover:bg-[#21255E] hover:border-[#21255E]"
-                                        style="border-radius:10px;" title="View Application">
-                                        <span class="material-symbols-outlined" style="font-size:15px;">open_in_new</span>
-                                        View
+                                        class="inline-flex items-center gap-1.5 text-white font-bold px-3.5 py-1.5 transition-all hover:opacity-90 active:scale-95 shadow-sm"
+                                        style="background-color: #21255E; border-radius: 999px; font-size: 12px;">
+                                        <span>View</span>
+                                        <span class="material-symbols-outlined" style="font-size:14px;">arrow_forward</span>
                                     </a>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="py-16 text-center">
-                                    <div class="flex flex-col items-center gap-3">
-                                        <div class="flex items-center justify-center text-gray-300"
-                                            style="width:56px;height:56px;border-radius:18px;background:#f1f5f9;">
-                                            <span class="material-symbols-outlined" style="font-size:28px;">folder_open</span>
-                                        </div>
-                                        <div>
-                                            <p class="font-bold text-gray-700 text-sm">No applications found</p>
-                                            <p class="text-xs text-gray-400 mt-1">No candidate submissions match your active
-                                                filters.</p>
-                                        </div>
-                                        <a href="{{ route('superadmin.applications.index') }}"
-                                            class="text-[12px] font-bold text-[#21255E] hover:underline mt-1">Clear all filters
-                                            →</a>
-                                    </div>
+                                <td colspan="7" class="py-12 text-center text-gray-400 text-[13px]">
+                                    <span class="material-symbols-outlined text-4xl text-gray-300 block mb-2">inbox</span>
+                                    No applications matching your filters were found.
                                 </td>
                             </tr>
                         @endforelse
@@ -256,19 +245,17 @@
                 </table>
             </div>
 
-            {{-- Pagination Footer --}}
+            {{-- Pagination --}}
             @if($applications->hasPages())
-                <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between gap-4"
-                    style="background:#fafbfc;">
-                    <p class="text-[12px] text-gray-400">
-                        Page <span class="font-bold text-gray-700">{{ $applications->currentPage() }}</span> of
-                        <span class="font-bold text-gray-700">{{ $applications->lastPage() }}</span>
+                <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+                    <p class="text-[12px] text-gray-500">
+                        Showing {{ $applications->firstItem() }} to {{ $applications->lastItem() }} of {{ $applications->total() }} results
                     </p>
-                    <div>{{ $applications->links() }}</div>
+                    <div>
+                        {{ $applications->links() }}
+                    </div>
                 </div>
             @endif
-
         </div>
-
     </div>
 @endsection

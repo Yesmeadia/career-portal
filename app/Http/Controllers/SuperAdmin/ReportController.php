@@ -201,10 +201,10 @@ class ReportController extends Controller
             foreach ($applications as $app) {
                 fputcsv($handle, [
                     $app->reference_no,
-                    $app->school->name ?? 'N/A',
-                    $app->vacancy->title ?? 'N/A',
-                    $app->vacancy->department->name ?? 'N/A',
-                    $app->vacancy->category->name ?? 'N/A',
+                    $app->school?->name ?? 'All Campuses (General)',
+                    $app->display_position,
+                    $app->vacancy?->department?->name ?? ($app->preferred_department ?: 'General'),
+                    $app->vacancy?->category?->name ?? 'Open Role',
                     $app->full_name,
                     $app->email,
                     $app->phone,

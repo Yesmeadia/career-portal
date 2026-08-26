@@ -161,15 +161,20 @@
                         </div>
                     @endforelse
                 </div>
-                @if($latestVacancies->count())
-                    <div class="mt-10 text-center">
+                <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+                    @if($latestVacancies->count())
                         <a href="{{ route('vacancies.index') }}"
                             class="section-primary-btn inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-label-bold text-label-bold uppercase tracking-wider lift-hover">
                             <span>View All Positions</span>
                             <span class="material-symbols-outlined text-lg">arrow_forward</span>
                         </a>
-                    </div>
-                @endif
+                    @endif
+                    <a href="{{ route('applications.general') }}"
+                        class="inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-label-bold text-label-bold uppercase tracking-wider border-2 border-deep-onyx/20 dark:border-white/20 hover:bg-ghost-gray dark:hover:bg-white/10 transition-colors">
+                        <span class="material-symbols-outlined text-lg text-emerald-600 dark:text-electric-green">stars</span>
+                        <span>Submit General Application</span>
+                    </a>
+                </div>
             </div>
         </section>
 

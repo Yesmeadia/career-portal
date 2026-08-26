@@ -53,7 +53,7 @@
                 <div class="badge"><span class="badge-dot"></span> Application Received</div>
                 <h2 class="title">Your Application Was Submitted!</h2>
                 <p class="text">Dear <strong>{{ $application->first_name }} {{ $application->last_name }}</strong>,</p>
-                <p class="text">Thank you for applying for the position of <strong>{{ $application->vacancy->title ?? 'Position' }}</strong>. Your application has been registered in our recruitment system and is currently under review.</p>
+                <p class="text">Thank you for submitting your application for <strong>{{ $application->display_position }}</strong>. Your application has been registered in our recruitment system and is currently under review.</p>
 
                 {{-- Reference Box --}}
                 <div class="ref-box">
@@ -65,11 +65,11 @@
                 <div class="info-grid">
                     <div class="info-row">
                         <div class="info-cell label">Position</div>
-                        <div class="info-cell value">{{ $application->vacancy->title ?? 'N/A' }}</div>
+                        <div class="info-cell value">{{ $application->display_position }}</div>
                     </div>
                     <div class="info-row">
                         <div class="info-cell label">Institution</div>
-                        <div class="info-cell value">RAZA UL ULOOM ISLAMIA HSS &mdash; POONCH</div>
+                        <div class="info-cell value">{{ $application->school?->name ?? ($application->vacancy?->school?->name ?? 'Partner Institutions') }}</div>
                     </div>
                     <div class="info-row">
                         <div class="info-cell label">Email</div>

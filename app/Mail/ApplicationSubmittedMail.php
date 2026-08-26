@@ -19,8 +19,8 @@ class ApplicationSubmittedMail extends Mailable
 
     public function envelope(): Envelope
     {
-        $schoolName = $this->application->school->name ?? 'Career Portal';
-        $vacancyTitle = $this->application->vacancy->title ?? 'Position';
+        $schoolName = $this->application->school?->name ?? ($this->application->vacancy?->school?->name ?? 'Career Portal');
+        $vacancyTitle = $this->application->vacancy?->title ?? ($this->application->preferred_position ?: 'General Application');
         return new Envelope(
             subject: "Application Received - {$vacancyTitle} ({$this->application->reference_no}) | {$schoolName}",
         );

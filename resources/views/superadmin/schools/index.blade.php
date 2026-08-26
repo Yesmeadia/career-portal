@@ -6,26 +6,7 @@
     <div class="max-w-[1400px] mx-auto">
 
         {{-- Page Header & Live System Clock --}}
-        <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
-             x-data="{
-                 timeStr: '{{ now()->timezone('Asia/Kolkata')->format('h:i:s A') }}',
-                 dateStr: '{{ now()->timezone('Asia/Kolkata')->format('l, M d, Y | h:i A') }}',
-                 init() {
-                     const update = () => {
-                         const now = new Date();
-                         const optionsTime = { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
-                         const optionsShortTime = { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: true };
-                         const optionsDate = { timeZone: 'Asia/Kolkata', weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
-                         
-                         this.timeStr = new Intl.DateTimeFormat('en-US', optionsTime).format(now);
-                         const d = new Intl.DateTimeFormat('en-US', optionsDate).format(now);
-                         const tShort = new Intl.DateTimeFormat('en-US', optionsShortTime).format(now);
-                         this.dateStr = `${d} | ${tShort}`;
-                     };
-                     update();
-                     setInterval(update, 1000);
-                 }
-             }">
+        <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <div class="flex items-center gap-3">
                     <h2 class="text-4xl font-extrabold text-[#111827] tracking-tight leading-none" style="font-size: 38px;">Campus Details</h2>
@@ -35,13 +16,13 @@
             {{-- Top Right Actions --}}
             <div class="flex items-center gap-3">
                 <a href="#filters-section"
-                    class="bg-white border border-gray-200 text-gray-600 px-4 py-2 rounded-full font-label-md text-[13px] flex items-center gap-2 hover:bg-gray-50 transition-all shadow-sm">
-                    <span class="material-symbols-outlined text-[18px]">filter_list</span> Search & Filters
+                    class="bg-white border border-gray-200 text-gray-600 px-4 py-2 rounded-full font-label-md text-[13px] hover:bg-gray-50 transition-all shadow-sm">
+                    Search & Filters
                 </a>
                 <a href="{{ route('superadmin.schools.create') }}"
-                    class="text-white px-5 py-2 rounded-full font-label-md text-[13px] flex items-center gap-2 hover:opacity-90 transition-all shadow-md active:scale-95 font-bold"
+                    class="text-white px-5 py-2 rounded-full font-label-md text-[13px] hover:opacity-90 transition-all shadow-md active:scale-95 font-bold"
                     style="background-color: #D7B56D;">
-                    <span class="material-symbols-outlined text-[18px]">add_location_alt</span> Add New School
+                    Add New School
                 </a>
             </div>
         </div>
@@ -49,21 +30,18 @@
         {{-- Filter & Directory Panel --}}
         <div id="filters-section" class="bg-white shadow-sm border border-gray-100 p-5 mb-6" style="border-radius: 20px;">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    <div>
-                        <h3 class="font-headline-sm text-[18px] font-bold text-[#111827]">Schools Directory</h3>
-                        <p class="text-xs text-gray-500 mt-0.5">Filter by institution name, status, or location details.</p>
-                    </div>
+                <div>
+                    <h3 class="font-headline-sm text-[18px] font-bold text-[#111827]">Schools Directory</h3>
+                    <p class="text-xs text-gray-500 mt-0.5">Filter by institution name, status, or location details.</p>
                 </div>
 
                 <!-- Filter Form -->
                 <form action="{{ route('superadmin.schools.index') }}" method="GET"
                     class="flex flex-wrap items-center gap-3">
                     <div class="relative">
-                        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-[18px]">search</span>
                         <input type="text" name="search" value="{{ $filters['search'] ?? '' }}"
                             placeholder="Search schools..."
-                            class="pl-10 pr-4 py-2 rounded-full border border-gray-200 focus:ring-2 focus:ring-[#21255e]/10 outline-none text-xs text-gray-700 w-56 sm:w-64 bg-gray-50/50">
+                            class="px-4 py-2 rounded-full border border-gray-200 focus:ring-2 focus:ring-[#21255e]/10 outline-none text-xs text-gray-700 w-56 sm:w-64 bg-gray-50/50">
                     </div>
 
                     <select name="status"
@@ -74,14 +52,14 @@
                     </select>
 
                     <button type="submit"
-                        class="bg-[#21255E] hover:bg-[#1a1d4b] text-white px-4 py-2 rounded-full text-xs font-semibold transition-all shadow-xs flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-[16px]">filter_alt</span> Filter
+                        class="bg-[#21255E] hover:bg-[#1a1d4b] text-white px-4 py-2 rounded-full text-xs font-semibold transition-all shadow-xs">
+                        Filter
                     </button>
 
                     @if(array_filter($filters))
                         <a href="{{ route('superadmin.schools.index') }}"
-                            class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-2 rounded-full text-xs font-semibold transition-colors flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[16px]">close</span> Clear
+                            class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-2 rounded-full text-xs font-semibold transition-colors">
+                            Clear
                         </a>
                     @endif
                 </form>
@@ -109,12 +87,10 @@
                                     <p class="font-bold text-[#111827] text-[14px] leading-snug">{{ $school->name }}</p>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <p class="font-medium text-gray-800 flex items-center gap-1.5">
-                                        <span class="material-symbols-outlined text-[15px] text-gray-400">mail</span>
+                                    <p class="font-medium text-gray-800">
                                         {{ $school->email }}
                                     </p>
-                                    <p class="text-[11px] text-gray-500 mt-1 flex items-center gap-1.5">
-                                        <span class="material-symbols-outlined text-[15px] text-gray-400">location_on</span>
+                                    <p class="text-[11px] text-gray-500 mt-1">
                                         {{ $school->city ?? 'Poonch' }}, {{ $school->state ?? 'J&K' }}
                                     </p>
                                 </td>
@@ -142,19 +118,17 @@
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
                                         <a href="{{ route('superadmin.schools.edit', $school) }}"
-                                            class="w-8 h-8 rounded-full bg-gray-50 border border-gray-200 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 flex items-center justify-center transition-colors text-gray-600 shadow-2xs"
+                                            class="px-3 py-1 rounded-full bg-gray-50 border border-gray-200 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 text-xs font-semibold text-gray-600 transition-colors shadow-2xs"
                                             title="Edit School">
-                                            <span class="material-symbols-outlined text-[17px]">edit</span>
+                                            Edit
                                         </a>
 
                                         <form action="{{ route('superadmin.schools.toggle-status', $school) }}" method="POST" class="inline">
                                             @csrf @method('PATCH')
                                             <button type="submit"
-                                                class="w-8 h-8 rounded-full bg-gray-50 border border-gray-200 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-200 flex items-center justify-center transition-colors text-gray-600 shadow-2xs"
+                                                class="px-3 py-1 rounded-full bg-gray-50 border border-gray-200 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-200 text-xs font-semibold text-gray-600 transition-colors shadow-2xs"
                                                 title="{{ $school->status === 'active' ? 'Deactivate' : 'Activate' }}">
-                                                <span class="material-symbols-outlined text-[17px]">
-                                                    {{ $school->status === 'active' ? 'toggle_off' : 'toggle_on' }}
-                                                </span>
+                                                {{ $school->status === 'active' ? 'Deactivate' : 'Activate' }}
                                             </button>
                                         </form>
 
@@ -164,9 +138,9 @@
                                             data-confirm-title="Delete School Campus" data-confirm-btn="Yes, Delete">
                                             @csrf @method('DELETE')
                                             <button type="submit"
-                                                class="w-8 h-8 rounded-full bg-gray-50 border border-gray-200 hover:bg-red-50 hover:text-red-700 hover:border-red-200 flex items-center justify-center transition-colors text-gray-600 shadow-2xs cursor-pointer"
+                                                class="px-3 py-1 rounded-full bg-gray-50 border border-gray-200 hover:bg-red-50 hover:text-red-700 hover:border-red-200 text-xs font-semibold text-gray-600 transition-colors shadow-2xs cursor-pointer"
                                                 title="Delete School">
-                                                <span class="material-symbols-outlined text-[17px]">delete</span>
+                                                Delete
                                             </button>
                                         </form>
                                     </div>
@@ -175,15 +149,12 @@
                         @empty
                             <tr>
                                 <td colspan="6" class="px-6 py-12 text-center text-gray-400">
-                                    <div class="w-14 h-14 rounded-2xl bg-gray-100 text-gray-400 flex items-center justify-center mx-auto mb-3 text-2xl">
-                                        <span class="material-symbols-outlined text-[32px]">school</span>
-                                    </div>
                                     <p class="font-bold text-gray-800 text-base">No schools found</p>
                                     <p class="text-xs text-gray-400 mt-1 mb-4">Start by registering your first educational institution.</p>
                                     <a href="{{ route('superadmin.schools.create') }}"
-                                        class="inline-flex items-center gap-2 text-white text-xs px-5 py-2.5 rounded-full font-bold transition-all shadow-md"
+                                        class="inline-flex items-center text-white text-xs px-5 py-2.5 rounded-full font-bold transition-all shadow-md"
                                         style="background-color: #D7B56D;">
-                                        <span class="material-symbols-outlined text-[18px]">add</span> Add School
+                                        Add School
                                     </a>
                                 </td>
                             </tr>

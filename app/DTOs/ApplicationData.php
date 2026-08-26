@@ -5,8 +5,11 @@ namespace App\DTOs;
 class ApplicationData
 {
     public function __construct(
-        public int $vacancy_id,
-        public int $school_id,
+        public ?int $vacancy_id,
+        public ?int $school_id,
+        public string $application_type,
+        public ?string $preferred_position,
+        public ?string $preferred_department,
         public string $first_name,
         public string $last_name,
         public string $email,
@@ -37,9 +40,16 @@ class ApplicationData
 
     public static function fromArray(array $data): self
     {
+        $vacancyId = !empty($data['vacancy_id']) ? (int) $data['vacancy_id'] : null;
+        $schoolId = !empty($data['school_id']) ? (int) $data['school_id'] : null;
+        $appType = $data['application_type'] ?? ($vacancyId ? 'vacancy' : 'general');
+
         return new self(
-            vacancy_id: $data['vacancy_id'],
-            school_id: $data['school_id'],
+            vacancy_id: $vacancyId,
+            school_id: $schoolId,
+            application_type: $appType,
+            preferred_position: $data['preferred_position'] ?? null,
+            preferred_department: $data['preferred_department'] ?? null,
             first_name: $data['first_name'],
             last_name: $data['last_name'],
             email: strtolower(trim($data['email'])),
@@ -74,6 +84,9 @@ class ApplicationData
         return [
             'vacancy_id' => $this->vacancy_id,
             'school_id' => $this->school_id,
+            'application_type' => $this->application_type,
+            'preferred_position' => $this->preferred_position,
+            'preferred_department' => $this->preferred_department,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'email' => $this->email,
@@ -104,3 +117,4 @@ class ApplicationData
         ];
     }
 }
+

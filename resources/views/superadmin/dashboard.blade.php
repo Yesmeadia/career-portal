@@ -228,8 +228,8 @@
                                 class="w-10 h-10 rounded-full object-cover border border-gray-200 shrink-0 shadow-xs">
                             <div class="flex-1 min-w-0">
                                 <p class="text-[13px] font-bold text-[#111827] truncate">{{ $app->full_name }}</p>
-                                <p class="text-[11px] text-gray-500 truncate mt-0.5">{{ $app->vacancy->title }} &bull;
-                                    {{ $app->school->name }}
+                                <p class="text-[11px] text-gray-500 truncate mt-0.5">{{ $app->display_position }} &bull;
+                                    {{ $app->school?->name ?? 'All Campuses' }}
                                 </p>
                             </div>
                             <span

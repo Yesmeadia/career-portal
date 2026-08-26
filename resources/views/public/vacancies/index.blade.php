@@ -199,6 +199,25 @@
 
                 {{-- ===== JOB LISTINGS ===== --}}
                 <div class="vacancies-content space-y-4">
+
+                    {{-- General Application Callout Banner --}}
+                    <div class="bg-gradient-to-r from-[#21255E]/10 via-electric-green/10 to-transparent dark:from-white/5 dark:via-electric-green/5 dark:to-transparent border-2 border-dashed border-[#21255E]/20 dark:border-white/15 rounded-3xl p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-electric-green/20 text-deep-onyx dark:text-electric-green flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">stars</span>
+                            </div>
+                            <div>
+                                <h3 class="font-headline-md text-base sm:text-lg text-deep-onyx dark:text-stark-white uppercase">Don't see a matching position?</h3>
+                                <p class="text-xs text-secondary dark:text-stark-white/80 mt-0.5">Submit an open General Application to join our candidate talent network.</p>
+                            </div>
+                        </div>
+                        <a href="{{ route('applications.general') }}"
+                            class="section-primary-btn px-6 py-2.5 rounded-full font-label-bold text-xs uppercase tracking-wider lift-hover shrink-0 flex items-center gap-1.5 whitespace-nowrap">
+                            <span>General Application</span>
+                            <span class="material-symbols-outlined text-base">arrow_forward</span>
+                        </a>
+                    </div>
+
                     @forelse($vacancies as $vacancy)
                         <div class="vacancy-row group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                             <div class="flex items-start gap-4 min-w-0 flex-1">
@@ -279,11 +298,19 @@
                             <span class="material-symbols-outlined about-foundation-text text-5xl">search_off</span>
                             <h3 class="font-headline-md text-2xl">No vacancies match your search</h3>
                             <p class="text-secondary dark:text-stark-white/80 text-sm max-w-md mx-auto">Try adjusting your
-                                keyword, school, or location filters to find open opportunities.</p>
-                            <a href="{{ route('vacancies.index') }}"
-                                class="section-primary-btn inline-block px-8 py-3 rounded-full font-label-bold uppercase text-xs tracking-wider lift-hover">
-                                Clear All Filters
-                            </a>
+                                keyword, school, or location filters, or submit an open general application.</p>
+                            <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+                                <a href="{{ route('vacancies.index') }}"
+                                    class="section-primary-btn inline-block px-8 py-3 rounded-full font-label-bold uppercase text-xs tracking-wider lift-hover">
+                                    Clear All Filters
+                                </a>
+                                <a href="{{ route('applications.general') }}"
+                                    class="inline-flex items-center gap-1.5 px-8 py-3 rounded-full font-label-bold uppercase text-xs tracking-wider border-2 border-deep-onyx/20 dark:border-white/20 hover:bg-ghost-gray dark:hover:bg-white/10 transition-colors">
+                                    <span>Submit General Application</span>
+                                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                                </a>
+                            </div>
+                        </div>
                     @endforelse
 
                     {{-- Pagination --}}

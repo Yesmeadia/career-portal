@@ -45,10 +45,20 @@ class ApplicationController extends Controller
             $query->where('vacancy_id', $request->vacancy_id);
         }
 
+        if ($request->filled('application_type')) {
+            if ($request->application_type === 'general') {
+                $query->where(function($q) {
+                    $q->where('application_type', 'general')->orWhereNull('vacancy_id');
+                });
+            } elseif ($request->application_type === 'vacancy') {
+                $query->where('application_type', 'vacancy')->whereNotNull('vacancy_id');
+            }
+        }
+
         $applications = $query->paginate(15)->withQueryString();
         $schools      = School::where('status', 'active')->orderBy('name')->get();
         $vacancies    = Vacancy::withoutGlobalScopes()->with('school')->orderBy('title')->get();
-        $filters      = $request->only(['search', 'school_id', 'vacancy_id', 'status']);
+        $filters      = $request->only(['search', 'school_id', 'vacancy_id', 'status', 'application_type']);
 
         $statusOptions = [
             'submitted'            => 'Submitted',

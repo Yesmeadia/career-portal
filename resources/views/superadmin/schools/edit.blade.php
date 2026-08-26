@@ -9,8 +9,8 @@
     <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
             <a href="{{ route('superadmin.schools.index') }}"
-                class="inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-[#21255E] mb-3 transition-colors">
-                <span class="material-symbols-outlined text-[16px]">arrow_back</span> Back to Schools Directory
+                class="inline-flex items-center text-xs font-bold text-gray-500 hover:text-[#21255E] mb-3 transition-colors">
+                ← Back to Schools Directory
             </a>
             <h2 class="text-4xl font-extrabold text-[#111827] tracking-tight leading-none" style="font-size: 36px;">Edit School Institution</h2>
             <p class="text-gray-500 text-sm mt-2 font-medium">Update institution settings and information for {{ $school->name }}.</p>
@@ -25,8 +25,7 @@
 
     @if ($errors->any())
         <div class="p-4 mb-6 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-sm">
-            <div class="font-bold flex items-center gap-2 mb-1">
-                <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+            <div class="font-bold mb-1">
                 Please fix the following issues:
             </div>
             <ul class="list-disc list-inside space-y-0.5 text-xs text-red-600">
@@ -45,8 +44,7 @@
         <div class="bg-white shadow-sm border border-gray-100 p-6 sm:p-8 space-y-6" style="border-radius: 20px;">
             <div class="border-b border-gray-100 pb-4 flex items-center justify-between">
                 <div>
-                    <h3 class="text-[17px] font-bold text-[#111827] flex items-center gap-2">
-                        <span class="material-symbols-outlined text-blue-600 text-[20px]">school</span>
+                    <h3 class="text-[17px] font-bold text-[#111827]">
                         School Profile &amp; Identity
                     </h3>
                     <p class="text-xs text-gray-500 mt-0.5">Official institution name, contact details, and location.</p>
@@ -134,8 +132,7 @@
         <div class="bg-white shadow-sm border border-gray-100 p-6 sm:p-8 space-y-6" style="border-radius: 20px;">
             <div class="border-b border-gray-100 pb-4 flex items-center justify-between">
                 <div>
-                    <h3 class="text-[17px] font-bold text-[#111827] flex items-center gap-2">
-                        <span class="material-symbols-outlined text-emerald-600 text-[20px]">manage_accounts</span>
+                    <h3 class="text-[17px] font-bold text-[#111827]">
                         Assigned School Administrator Account
                     </h3>
                     <p class="text-xs text-gray-500 mt-0.5">Manage the login account and credentials for this school's admin.</p>
@@ -172,9 +169,8 @@
                 Cancel
             </a>
             <button type="submit"
-                    class="text-white font-bold text-xs px-8 py-3 rounded-full transition-all shadow-md flex items-center gap-2 active:scale-95 cursor-pointer"
+                    class="text-white font-bold text-xs px-8 py-3 rounded-full transition-all shadow-md active:scale-95 cursor-pointer"
                     style="background-color: #D7B56D;">
-                <span class="material-symbols-outlined text-[18px]">save</span>
                 <span>Save School Changes</span>
             </button>
         </div>

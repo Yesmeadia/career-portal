@@ -20,9 +20,9 @@
                         </h1>
                         <p class="font-body-md text-sm text-secondary dark:text-secondary-fixed-dim mt-1 leading-relaxed">
                             Your application for <strong
-                                class="font-label-bold text-deep-onyx dark:text-electric-green">{{ $application->vacancy->title }}</strong>
+                                class="font-label-bold text-deep-onyx dark:text-electric-green">{{ $application->vacancy?->title ?? ($application->preferred_position ?: 'General Application') }}</strong>
                             at <strong
-                                class="font-label-bold text-deep-onyx dark:text-electric-green">{{ $application->school->name }}</strong>
+                                class="font-label-bold text-deep-onyx dark:text-electric-green">{{ $application->school?->name ?? ($application->vacancy?->school?->name ?? 'All Partner Institutions') }}</strong>
                             has been registered.
                         </p>
                     </div>
@@ -91,14 +91,14 @@
                                 class="p-4 rounded-2xl bg-ghost-gray dark:bg-deep-onyx border border-ghost-gray dark:border-white/10 space-y-1">
                                 <p class="text-[11px] font-label-bold text-secondary dark:text-stark-white/60 uppercase">
                                     Applied Position</p>
-                                <p class="font-bold truncate">{{ $application->vacancy->title }}</p>
+                                <p class="font-bold truncate">{{ $application->vacancy?->title ?? ($application->preferred_position ?: 'General Application') }}</p>
                             </div>
 
                             <div
                                 class="p-4 rounded-2xl bg-ghost-gray dark:bg-deep-onyx border border-ghost-gray dark:border-white/10 space-y-1">
                                 <p class="text-[11px] font-label-bold text-secondary dark:text-stark-white/60 uppercase">
                                     Institution / School</p>
-                                <p class="font-bold truncate">{{ $application->vacancy->school->name ?? ($application->school->name ?? 'School Campus') }}
+                                <p class="font-bold truncate">{{ $application->school?->name ?? ($application->vacancy?->school?->name ?? 'All Institutional Campuses') }}
                                 </p>
                             </div>
 
@@ -231,7 +231,7 @@
                                 <p
                                     class="text-xs text-secondary dark:text-stark-white/70 font-body-md mt-1 leading-relaxed">
                                     You can track status anytime or contact
-                                    <strong>{{ $application->school->name }}</strong> admissions &amp; recruitment desk.
+                                    <strong>{{ $application->school?->name ?? ($application->vacancy?->school?->name ?? 'Institutional') }}</strong> admissions &amp; recruitment desk.
                                 </p>
                             </div>
                         </div>

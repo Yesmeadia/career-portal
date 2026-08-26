@@ -24,7 +24,7 @@ class ApplicationController extends Controller
 
     public function index(Request $request)
     {
-        $filters = $request->only(['search', 'status', 'vacancy_id', 'bookmarked']);
+        $filters = $request->only(['search', 'status', 'vacancy_id', 'bookmarked', 'application_type']);
         $filters['school_id'] = auth()->user()->school_id;
 
         $applications = $this->applicationRepository->paginateAdmin($filters, 15);

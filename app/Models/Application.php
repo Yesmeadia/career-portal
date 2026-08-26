@@ -18,8 +18,11 @@ class Application extends Model
 
     protected $fillable = [
         'reference_no',
+        'application_type',
         'vacancy_id',
         'school_id',
+        'preferred_position',
+        'preferred_department',
         'first_name',
         'last_name',
         'email',
@@ -65,13 +68,37 @@ class Application extends Model
         return (int) $this->date_of_birth->diffInYears(now());
     }
 
+    public function isGeneral(): bool
+    {
+        return $this->application_type === 'general' || empty($this->vacancy_id);
+    }
+
+    public function getDisplayPositionAttribute(): string
+    {
+        if ($this->vacancy_id && $this->vacancy) {
+            return $this->vacancy->title;
+        }
+        return $this->preferred_position ?: 'General Application';
+    }
+
+    public function scopeGeneral($query)
+    {
+        return $query->where('application_type', 'general')->orWhereNull('vacancy_id');
+    }
+
+    public function scopeVacancy($query)
+    {
+        return $query->where('application_type', 'vacancy')->whereNotNull('vacancy_id');
+    }
+
     protected static function boot()
     {
         parent::boot();
 
         static::creating(function ($application) {
             if (empty($application->reference_no)) {
-                $application->reference_no = 'APP-' . strtoupper(Str::random(8));
+                $prefix = ($application->application_type === 'general' || empty($application->vacancy_id)) ? 'GEN-' : 'APP-';
+                $application->reference_no = $prefix . strtoupper(Str::random(8));
             }
         });
     }

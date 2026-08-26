@@ -76,8 +76,11 @@
                                 <div>
                                     <h2
                                         class="font-headline-md text-2xl sm:text-3xl text-deep-onyx dark:text-stark-white uppercase tracking-tight">
-                                        {{ $application->vacancy->title }}
+                                        {{ $application->vacancy?->title ?? ($application->preferred_position ?: 'General Application') }}
                                     </h2>
+                                    <p class="text-xs text-secondary dark:text-stark-white/70 font-label-bold mt-1">
+                                        {{ $application->school?->name ?? ($application->vacancy?->school?->name ?? 'Institutional Placement Pool') }}
+                                    </p>
                                 </div>
                                 <div class="shrink-0">
                                     <span

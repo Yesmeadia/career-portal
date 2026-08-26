@@ -23,6 +23,7 @@
         ['route' => 'superadmin.job-categories.index', 'label' => 'Job Categories',   'icon' => 'category'],
     ];
     $systemItems = [
+        ['route' => 'superadmin.admins.index',     'label' => 'Super Admins', 'icon' => 'admin_panel_settings'],
         ['route' => 'superadmin.cms.index',        'label' => 'Site Settings', 'icon' => 'settings'],
         ['route' => 'superadmin.audit-logs.index', 'label' => 'Audit Log',    'icon' => 'history'],
     ];

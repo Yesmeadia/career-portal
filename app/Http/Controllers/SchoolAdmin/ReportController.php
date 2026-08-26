@@ -42,7 +42,7 @@ class ReportController extends Controller
             foreach ($applications as $app) {
                 fputcsv($handle, [
                     $app->reference_no,
-                    $app->vacancy->title,
+                    $app->display_position,
                     $app->full_name,
                     $app->email,
                     $app->phone,

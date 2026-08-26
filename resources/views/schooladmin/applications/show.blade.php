@@ -153,8 +153,8 @@
             </div>
             <div class="p-5">
                 <form action="{{ route('schooladmin.applications.send-email', $application) }}" method="POST" x-data="{
-                          subject: 'Regarding your application for {{ addslashes($application->vacancy->title ?? 'Position') }}',
-                          message: 'Dear {{ addslashes($application->first_name) }},\n\nWe are writing regarding your official candidate application (Ref: {{ $application->reference_no }}) for the position of {{ addslashes($application->vacancy->title ?? 'Position') }} at {{ addslashes($application->school->name ?? 'our institution') }}.\n\n\nBest regards,\nSelection Board &amp; Recruitment Team'
+                          subject: 'Regarding your application for {{ addslashes($application->display_position) }}',
+                          message: 'Dear {{ addslashes($application->first_name) }},\n\nWe are writing regarding your official candidate application (Ref: {{ $application->reference_no }}) for {{ addslashes($application->display_position) }} at {{ addslashes($application->school?->name ?? 'our institution') }}.\n\n\nBest regards,\nSelection Board &amp; Recruitment Team'
                       }" class="space-y-3">
                     @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -229,7 +229,7 @@
                             <div class="bg-gray-50 border border-gray-200 p-3 rounded-xl">
                                 <p class="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Applied Position</p>
                                 <p class="text-xs font-extrabold text-[#21255E] mt-0.5 truncate">
-                                    {{ $application->vacancy->title ?? 'General Applicant' }}
+                                    {{ $application->display_position }}
                                 </p>
                             </div>
                             <div class="bg-gray-50 border border-gray-200 p-3 rounded-xl">

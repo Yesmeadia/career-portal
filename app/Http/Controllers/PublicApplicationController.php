@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use App\DTOs\ApplicationData;
 use App\Http\Requests\StoreApplicationRequest;
+use App\Http\Requests\StoreGeneralApplicationRequest;
 use App\Models\Vacancy;
+use App\Models\School;
+use App\Models\Department;
+use App\Models\JobCategory;
 use App\Models\Application;
 use App\Services\ApplicationService;
 use Illuminate\Http\Request;
@@ -24,9 +28,41 @@ class PublicApplicationController extends Controller
         return view('public.apply', compact('vacancy'));
     }
 
+    public function createGeneral(Request $request)
+    {
+        $schools = School::where('status', 'active')->orderBy('name')->get();
+        $departments = Department::where('is_active', true)->orderBy('name')->get();
+        $categories = JobCategory::where('is_active', true)->orderBy('name')->get();
+        $selectedSchoolId = $request->query('school_id');
+
+        return view('public.general-apply', compact('schools', 'departments', 'categories', 'selectedSchoolId'));
+    }
+
     public function store(StoreApplicationRequest $request)
     {
         $validated = $request->validated();
+
+        // Handle Resume upload
+        if ($request->hasFile('resume')) {
+            $validated['resume_path'] = $request->file('resume')->store('resumes', 'public');
+        }
+
+        // Handle Photo upload
+        if ($request->hasFile('photo')) {
+            $validated['photo_path'] = $request->file('photo')->store('photos', 'public');
+        }
+
+        $dto = ApplicationData::fromArray($validated);
+        $application = $this->applicationService->submitApplication($dto);
+
+        return redirect()->route('applications.success', $application->reference_no);
+    }
+
+    public function storeGeneral(StoreGeneralApplicationRequest $request)
+    {
+        $validated = $request->validated();
+        $validated['application_type'] = 'general';
+        $validated['vacancy_id'] = null;
 
         // Handle Resume upload
         if ($request->hasFile('resume')) {

@@ -56,7 +56,7 @@
                 @if($newStatus === 'interview_scheduled')
                     <h2 class="title">You Are Invited for an Interview!</h2>
                     <p class="text">Dear <strong>{{ $application->first_name }} {{ $application->last_name }}</strong>,</p>
-                    <p class="text">We are pleased to inform you that your application for the position of <strong>{{ $application->vacancy->title ?? 'the advertised position' }}</strong> (Reference: <span class="ref-pill">{{ $application->reference_no }}</span>) has progressed to the interview stage.</p>
+                    <p class="text">We are pleased to inform you that your application for <strong>{{ $application->display_position }}</strong> (Reference: <span class="ref-pill">{{ $application->reference_no }}</span>) has progressed to the interview stage.</p>
 
                     {{-- Interview Schedule Details Card --}}
                     @if($interview)
@@ -125,7 +125,7 @@
                 @else
                     <h2 class="title">Your Application Status Has Changed</h2>
                     <p class="text">Dear <strong>{{ $application->first_name }} {{ $application->last_name }}</strong>,</p>
-                    <p class="text">There is an update regarding your application for the position of <strong>{{ $application->vacancy->title ?? 'Position' }}</strong>. Reference: <span class="ref-pill">{{ $application->reference_no }}</span></p>
+                    <p class="text">There is an update regarding your application for <strong>{{ $application->display_position }}</strong>. Reference: <span class="ref-pill">{{ $application->reference_no }}</span></p>
 
                     {{-- Status Card --}}
                     <div class="status-card">

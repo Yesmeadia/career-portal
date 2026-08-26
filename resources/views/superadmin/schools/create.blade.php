@@ -9,8 +9,8 @@
         <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <a href="{{ route('superadmin.schools.index') }}"
-                    class="inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-[#21255E] mb-3 transition-colors">
-                    <span class="material-symbols-outlined text-[16px]">arrow_back</span> Back to Schools Directory
+                    class="inline-flex items-center text-xs font-bold text-gray-500 hover:text-[#21255E] mb-3 transition-colors">
+                    ← Back to Schools Directory
                 </a>
                 <h2 class="text-4xl font-extrabold text-[#111827] tracking-tight leading-none" style="font-size: 36px;">Register New School</h2>
                 <p class="text-gray-500 text-sm mt-2 font-medium">Configure institution profile and generate initial school admin credentials.</p>
@@ -34,8 +34,7 @@
                         1
                     </div>
                     <div>
-                        <h3 class="text-[17px] font-bold text-[#111827] flex items-center gap-2">
-                            <span class="material-symbols-outlined text-blue-600 text-[20px]">school</span>
+                        <h3 class="text-[17px] font-bold text-[#111827]">
                             School Profile &amp; Identity
                         </h3>
                         <p class="text-xs text-gray-500 mt-0.5">Official institution name, contact details, and location details.</p>
@@ -104,12 +103,6 @@
                             <input type="text" id="create_pincode" name="postal_code" value="{{ old('postal_code') }}"
                                 placeholder="185101"
                                 class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#21255e]/10 outline-none text-sm font-semibold text-gray-800 bg-gray-50/50 pr-10 transition-all">
-                            <span id="create_pincode_spinner" class="hidden absolute right-3 top-1/2 -translate-y-1/2">
-                                <svg class="animate-spin h-4 w-4 text-[#21255E]" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                                </svg>
-                            </span>
                             <span id="create_pincode_ok"
                                 class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-green-600 text-xs font-bold">✓</span>
                             <span id="create_pincode_err"
@@ -145,8 +138,7 @@
                         2
                     </div>
                     <div>
-                        <h3 class="text-[17px] font-bold text-[#111827] flex items-center gap-2">
-                            <span class="material-symbols-outlined text-purple-600 text-[20px]">manage_accounts</span>
+                        <h3 class="text-[17px] font-bold text-[#111827]">
                             Initial School Administrator Account
                         </h3>
                         <p class="text-xs text-gray-500 mt-0.5">Credentials for managing this institution's vacancies and candidate applications.</p>
@@ -190,9 +182,8 @@
                     Cancel
                 </a>
                 <button type="submit"
-                    class="text-white font-bold text-xs px-8 py-3 rounded-full transition-all shadow-md flex items-center gap-2 active:scale-95"
+                    class="text-white font-bold text-xs px-8 py-3 rounded-full transition-all shadow-md active:scale-95 cursor-pointer"
                     style="background-color: #D7B56D;">
-                    <span class="material-symbols-outlined text-[18px]">check_circle</span>
                     <span>Register School &amp; Account</span>
                 </button>
             </div>

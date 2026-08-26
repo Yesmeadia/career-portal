@@ -26,4 +26,12 @@ export default defineConfig({
             ignored: ['**/storage/framework/views/**'],
         },
     },
+    build: {
+        outDir: 'public/build',
+        emptyOutDir: true,
+        manifest: 'manifest.json',
+        sourcemap: false,
+        minify: 'esbuild',
+        cssMinify: true,
+    },
 });

@@ -31,6 +31,16 @@ class ApplicationRepository implements ApplicationRepositoryInterface
             $query->where('vacancy_id', $filters['vacancy_id']);
         }
 
+        if (!empty($filters['application_type'])) {
+            if ($filters['application_type'] === 'general') {
+                $query->where(function($q) {
+                    $q->where('application_type', 'general')->orWhereNull('vacancy_id');
+                });
+            } elseif ($filters['application_type'] === 'vacancy') {
+                $query->where('application_type', 'vacancy')->whereNotNull('vacancy_id');
+            }
+        }
+
         if (!empty($filters['school_id'])) {
             $query->where('school_id', $filters['school_id']);
         }
@@ -49,7 +59,7 @@ class ApplicationRepository implements ApplicationRepositoryInterface
 
     public function findByReference(string $referenceNo): ?Application
     {
-        return Application::where('reference_no', $referenceNo)->with(['vacancy.school'])->first();
+        return Application::where('reference_no', $referenceNo)->with(['vacancy.school', 'school'])->first();
     }
 
     public function create(array $data): Application
@@ -66,13 +76,20 @@ class ApplicationRepository implements ApplicationRepositoryInterface
         return $application->update($payload);
     }
 
-    public function checkDuplicate(int $vacancyId, string $email, string $phone): bool
+    public function checkDuplicate(?int $vacancyId, string $email, string $phone): bool
     {
-        return Application::where('vacancy_id', $vacancyId)
-            ->where(function ($q) use ($email, $phone) {
-                $q->where('email', $email)->orWhere('phone', $phone);
-            })
-            ->exists();
+        $query = Application::query();
+
+        if ($vacancyId) {
+            $query->where('vacancy_id', $vacancyId);
+        } else {
+            $query->whereNull('vacancy_id')
+                  ->where('created_at', '>=', now()->subDays(30));
+        }
+
+        return $query->where(function ($q) use ($email, $phone) {
+            $q->where('email', $email)->orWhere('phone', $phone);
+        })->exists();
     }
 
     public function delete(Application $application): bool
