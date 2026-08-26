@@ -36,7 +36,7 @@ class ApplicationController extends Controller
     public function show(Application $application)
     {
         $this->authorize('view', $application);
-        $application->load(['vacancy', 'school', 'interviews']);
+        $application->load(['vacancy', 'school', 'transferredFromSchool', 'interviews']);
         return view('schooladmin.applications.show', compact('application'));
     }
 

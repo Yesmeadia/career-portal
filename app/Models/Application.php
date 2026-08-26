@@ -53,6 +53,9 @@ class Application extends Model
         'admin_notes',
         'is_bookmarked',
         'applied_at',
+        'transferred_from_school_id',
+        'recommendation_notes',
+        'transferred_at',
     ];
 
     protected $casts = [
@@ -60,6 +63,7 @@ class Application extends Model
         'declaration_accepted' => 'boolean',
         'is_bookmarked' => 'boolean',
         'applied_at' => 'datetime',
+        'transferred_at' => 'datetime',
     ];
 
     public function getAgeAttribute(): ?int
@@ -111,6 +115,16 @@ class Application extends Model
     public function school(): BelongsTo
     {
         return $this->belongsTo(School::class);
+    }
+
+    public function transferredFromSchool(): BelongsTo
+    {
+        return $this->belongsTo(School::class, 'transferred_from_school_id');
+    }
+
+    public function isTransferred(): bool
+    {
+        return !is_null($this->transferred_from_school_id);
     }
 
     public function interviews(): HasMany

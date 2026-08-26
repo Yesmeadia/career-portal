@@ -10,7 +10,7 @@ class ApplicationRepository implements ApplicationRepositoryInterface
 {
     public function paginateAdmin(array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
-        $query = Application::with(['vacancy', 'school', 'interviews']);
+        $query = Application::with(['vacancy', 'school', 'transferredFromSchool', 'interviews']);
 
         if (!empty($filters['search'])) {
             $search = $filters['search'];
@@ -73,6 +73,26 @@ class ApplicationRepository implements ApplicationRepositoryInterface
         if ($notes !== null) {
             $payload['admin_notes'] = $notes;
         }
+        return $application->update($payload);
+    }
+
+    public function transferOrRecommend(Application $application, int $targetSchoolId, ?int $targetVacancyId = null, ?string $recommendationNotes = null): bool
+    {
+        // Preserve original school id if not already transferred
+        $transferredFrom = $application->transferred_from_school_id ?? $application->school_id;
+
+        $payload = [
+            'school_id' => $targetSchoolId,
+            'transferred_from_school_id' => $transferredFrom,
+            'vacancy_id' => $targetVacancyId,
+            'application_type' => $targetVacancyId ? 'vacancy' : 'general',
+            'transferred_at' => now(),
+        ];
+
+        if ($recommendationNotes !== null) {
+            $payload['recommendation_notes'] = $recommendationNotes;
+        }
+
         return $application->update($payload);
     }
 

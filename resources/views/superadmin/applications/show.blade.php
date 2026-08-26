@@ -131,6 +131,12 @@
                         Download CV
                     </a>
                 @endif
+                <button onclick="document.getElementById('transferModalSA').classList.remove('hidden')"
+                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 font-bold text-xs rounded-full hover:opacity-90 transition-all cursor-pointer shadow-xs"
+                    style="background-color: #4F46E5; color: #ffffff;">
+                    <span class="material-symbols-outlined text-[15px]" style="color: #ffffff;">swap_horiz</span>
+                    Transfer / Recommend
+                </button>
                 <button onclick="document.getElementById('emailComposerSA').classList.toggle('hidden')"
                     class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-white font-bold text-xs rounded-full transition-all cursor-pointer shadow-xs"
                     style="background:#21255E;">
@@ -197,6 +203,149 @@
                 </form>
             </div>
         </div>
+
+        {{-- ── TRANSFERRED / RECOMMENDED BANNER (If applicable) ── --}}
+        @if($application->isTransferred())
+            <div class="text-white rounded-2xl p-5 shadow-md border border-indigo-700 relative overflow-hidden print:hidden" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e3a8a 100%);">
+                <div class="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+                    <span class="material-symbols-outlined text-[120px]" style="color: #ffffff;">swap_horiz</span>
+                </div>
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-2xs" style="background-color: #FBBF24; color: #1e1b4b;">
+                                <span class="material-symbols-outlined text-[12px]" style="color: #1e1b4b;">verified</span> Recommended & Transferred
+                            </span>
+                            <span class="text-xs font-mono" style="color: #c7d2fe;">
+                                {{ $application->transferred_at ? $application->transferred_at->format('d M Y, h:i A') : '' }}
+                            </span>
+                        </div>
+                        <h3 class="text-base font-bold flex flex-wrap items-center gap-2 text-white">
+                            <span>Transferred from: <strong style="color: #FCD34D;">{{ $application->transferredFromSchool?->name ?? 'Previous Institution' }}</strong></span>
+                            <span class="material-symbols-outlined text-sm" style="color: #ffffff;">arrow_forward</span>
+                            <span>Current Institution: <strong style="color: #FCD34D;">{{ $application->school?->name ?? 'Target Institution' }}</strong></span>
+                        </h3>
+                        @if($application->recommendation_notes)
+                            <div class="mt-2.5 border rounded-xl p-3 text-xs leading-relaxed" style="background-color: rgba(15, 23, 42, 0.6); border-color: rgba(99, 102, 241, 0.3); color: #e0e7ff;">
+                                <span class="font-bold block mb-1 flex items-center gap-1" style="color: #FCD34D;">
+                                    <span class="material-symbols-outlined text-[14px]" style="color: #FCD34D;">rate_review</span> Super Admin Recommendation Notes:
+                                </span>
+                                {{ $application->recommendation_notes }}
+                            </div>
+                        @endif
+                    </div>
+                    <button onclick="document.getElementById('transferModalSA').classList.remove('hidden')"
+                        class="shrink-0 px-4 py-2 text-white font-bold text-xs rounded-xl transition-all flex items-center gap-1.5 cursor-pointer border"
+                        style="background-color: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.3); color: #ffffff;">
+                        <span class="material-symbols-outlined text-[16px]" style="color: #ffffff;">swap_horiz</span> Re-transfer Application
+                    </button>
+                </div>
+            </div>
+        @endif
+
+        {{-- ── INSTITUTION TRANSFER / RECOMMENDATION MODAL ── --}}
+        <div id="transferModalSA" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 print:hidden" x-data="transferModalData()">
+            <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-gray-100 overflow-hidden transform transition-all">
+                <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between" style="background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center shadow-xs" style="background-color: #21255E; color: #ffffff;">
+                            <span class="material-symbols-outlined text-[20px]" style="color: #ffffff;">swap_horiz</span>
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-gray-900 text-sm">Transfer / Recommend Application</h3>
+                            <p class="text-gray-500 text-[11px]">Reassign candidate to another school / institution</p>
+                        </div>
+                    </div>
+                    <button onclick="document.getElementById('transferModalSA').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 cursor-pointer">
+                        <span class="material-symbols-outlined text-[20px]">close</span>
+                    </button>
+                </div>
+
+                <form action="{{ route('superadmin.applications.transfer', $application) }}" method="POST" class="p-6 space-y-4">
+                    @csrf
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1.5">Current Institution</label>
+                        <input type="text" readonly value="{{ $application->school?->name ?? 'All Campuses (General)' }}" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-gray-100 text-gray-600 text-xs font-semibold">
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1.5">Target Institution / School *</label>
+                        <select name="target_school_id" required x-model="selectedSchoolId" @change="fetchVacancies()" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#21255E]/30 outline-none text-xs font-semibold text-gray-900 bg-white">
+                            <option value="">Select Target School...</option>
+                            @foreach($schools as $sch)
+                                @if($sch->id !== $application->school_id)
+                                    <option value="{{ $sch->id }}">{{ $sch->name }} ({{ $sch->city ?? 'Campus' }})</option>
+                                @endif
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1.5">Target Vacancy / Position (Optional)</label>
+                        <select name="target_vacancy_id" x-model="selectedVacancyId" :disabled="loadingVacancies || !selectedSchoolId" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#21255E]/30 outline-none text-xs font-semibold text-gray-900 bg-white disabled:bg-gray-100 disabled:text-gray-400">
+                            <option value="">General Application (No Specific Vacancy)</option>
+                            <template x-for="vac in vacancies" :key="vac.id">
+                                <option :value="vac.id" x-text="vac.title"></option>
+                            </template>
+                        </select>
+                        <span x-show="loadingVacancies" class="text-[10px] font-semibold mt-1 flex items-center gap-1" style="color: #21255E;">
+                            <span class="material-symbols-outlined text-[12px] animate-spin">sync</span> Loading school vacancies...
+                        </span>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1.5">Super Admin Recommendation & Transfer Notes *</label>
+                        <textarea name="recommendation_notes" rows="3" required placeholder="Write recommendation reason or instructions for the receiving institution..." class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#21255E]/30 outline-none text-xs text-gray-800 bg-white resize-y">{{ old('recommendation_notes', $application->recommendation_notes) }}</textarea>
+                    </div>
+
+                    <div class="pt-2 flex items-center justify-end gap-2.5 border-t border-gray-100">
+                        <button type="button" onclick="document.getElementById('transferModalSA').classList.add('hidden')" class="px-4 py-2 border border-gray-300 text-gray-700 font-bold text-xs rounded-xl hover:bg-gray-50 cursor-pointer bg-white">
+                            Cancel
+                        </button>
+                        <button type="submit" class="px-5 py-2.5 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 shadow-md transition-all cursor-pointer hover:opacity-90" style="background-color: #21255E; color: #ffffff;">
+                            <span class="material-symbols-outlined text-[16px]" style="color: #ffffff;">swap_horiz</span>
+                            Confirm Transfer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script>
+        function transferModalData() {
+            return {
+                selectedSchoolId: '',
+                selectedVacancyId: '',
+                vacancies: [],
+                loadingVacancies: false,
+                fetchVacancies() {
+                    if (!this.selectedSchoolId) {
+                        this.vacancies = [];
+                        return;
+                    }
+                    this.loadingVacancies = true;
+                    fetch(`/super-admin/schools/${this.selectedSchoolId}/vacancies-json`)
+                        .then(res => res.json())
+                        .then(data => {
+                            this.vacancies = data.vacancies || [];
+                            this.loadingVacancies = false;
+                        })
+                        .catch(err => {
+                            console.error('Error fetching vacancies:', err);
+                            this.loadingVacancies = false;
+                        });
+                }
+            };
+        }
+        </script>
+        @if(request('transfer'))
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const modal = document.getElementById('transferModalSA');
+                    if (modal) modal.classList.remove('hidden');
+                });
+            </script>
+        @endif
 
         {{-- ══════════════════════════════════════════════════════════════
         OFFICIAL INSTITUTIONAL APPLICATION  (FORMAL DOCUMENT)
@@ -528,9 +677,17 @@
                                                 {{ $inv->panel_members ?: '—' }}
                                             </td>
                                             <td class="px-3.5 py-2.5 whitespace-nowrap">
-                                                <span class="inline-block px-2 py-0.5 rounded text-[10px] font-extrabold uppercase {{ $inv->status === 'completed' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : ($inv->status === 'cancelled' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-amber-50 text-amber-700 border border-amber-200') }}">
-                                                    {{ $inv->status }}
-                                                </span>
+                                                <form action="{{ route('superadmin.interviews.update', $inv) }}" method="POST" class="inline-block">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <select name="status" onchange="this.form.submit()"
+                                                        class="text-[11px] font-extrabold uppercase px-2.5 py-1 rounded-lg border outline-none cursor-pointer transition-all {{ $inv->status === 'completed' ? 'bg-emerald-50 text-emerald-800 border-emerald-300' : ($inv->status === 'cancelled' ? 'bg-rose-50 text-rose-800 border-rose-300' : ($inv->status === 'rescheduled' ? 'bg-purple-50 text-purple-800 border-purple-300' : 'bg-amber-50 text-amber-800 border-amber-300')) }}">
+                                                        <option value="scheduled" {{ $inv->status === 'scheduled' ? 'selected' : '' }}>SCHEDULED</option>
+                                                        <option value="completed" {{ $inv->status === 'completed' ? 'selected' : '' }}>COMPLETED</option>
+                                                        <option value="cancelled" {{ $inv->status === 'cancelled' ? 'selected' : '' }}>CANCELLED</option>
+                                                        <option value="rescheduled" {{ $inv->status === 'rescheduled' ? 'selected' : '' }}>RESCHEDULED</option>
+                                                    </select>
+                                                </form>
                                                 @if($inv->score !== null)
                                                     <span class="font-extrabold text-gray-900 block text-[11px] mt-0.5">{{ $inv->score }} / 100</span>
                                                 @endif

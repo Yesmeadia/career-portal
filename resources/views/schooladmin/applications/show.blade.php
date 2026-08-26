@@ -196,6 +196,36 @@
             </div>
         </div>
 
+        {{-- ── TRANSFERRED / RECOMMENDED BY SUPER ADMIN BANNER ── --}}
+        @if($application->isTransferred())
+            <div class="rounded-2xl p-5 shadow-md border relative overflow-hidden print:hidden text-white" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e3a8a 100%); border-color: #3730a3;">
+                <div class="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+                    <span class="material-symbols-outlined text-[120px]" style="color: #ffffff;">swap_horiz</span>
+                </div>
+                <div class="space-y-2 relative z-10">
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-2xs" style="background-color: #FBBF24; color: #1e1b4b;">
+                            <span class="material-symbols-outlined text-[12px]" style="color: #1e1b4b;">verified</span> Recommended by Super Admin
+                        </span>
+                        <span class="text-xs font-mono font-semibold" style="color: #c7d2fe;">
+                            {{ $application->transferred_at ? $application->transferred_at->format('d M Y, h:i A') : '' }}
+                        </span>
+                    </div>
+                    <h3 class="text-base font-extrabold flex flex-wrap items-center gap-2" style="color: #ffffff;">
+                        <span>Transferred &amp; Recommended from: <strong style="color: #FCD34D;">{{ $application->transferredFromSchool?->name ?? 'Another Institution' }}</strong></span>
+                    </h3>
+                    @if($application->recommendation_notes)
+                        <div class="mt-2.5 border rounded-xl p-3 text-xs leading-relaxed" style="background-color: rgba(15, 23, 42, 0.65); border-color: rgba(165, 180, 252, 0.25); color: #f1f5f9;">
+                            <span class="font-bold block mb-1 flex items-center gap-1" style="color: #FCD34D;">
+                                <span class="material-symbols-outlined text-[14px]" style="color: #FCD34D;">rate_review</span> Super Admin Recommendation Note:
+                            </span>
+                            {{ $application->recommendation_notes }}
+                        </div>
+                    @endif
+                </div>
+            </div>
+        @endif
+
         {{-- ══════════════════════════════════════════════════════════════
         OFFICIAL INSTITUTIONAL APPLICATION (FORMAL DOCUMENT)
         ══════════════════════════════════════════════════════════════ --}}
@@ -530,14 +560,19 @@
                                                 {{ $inv->panel_members ?: '—' }}
                                             </td>
                                             <td class="px-3.5 py-2.5 whitespace-nowrap">
-                                                <span
-                                                    class="inline-block px-2 py-0.5 rounded text-[10px] font-extrabold uppercase {{ $inv->status === 'completed' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : ($inv->status === 'cancelled' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-amber-50 text-amber-700 border border-amber-200') }}">
-                                                    {{ $inv->status }}
-                                                </span>
+                                                <form action="{{ route('schooladmin.interviews.update', $inv) }}" method="POST" class="inline-block">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <select name="status" onchange="this.form.submit()"
+                                                        class="text-[11px] font-extrabold uppercase px-2.5 py-1 rounded-lg border outline-none cursor-pointer transition-all {{ $inv->status === 'completed' ? 'bg-emerald-50 text-emerald-800 border-emerald-300' : ($inv->status === 'cancelled' ? 'bg-rose-50 text-rose-800 border-rose-300' : ($inv->status === 'rescheduled' ? 'bg-purple-50 text-purple-800 border-purple-300' : 'bg-amber-50 text-amber-800 border-amber-300')) }}">
+                                                        <option value="scheduled" {{ $inv->status === 'scheduled' ? 'selected' : '' }}>SCHEDULED</option>
+                                                        <option value="completed" {{ $inv->status === 'completed' ? 'selected' : '' }}>COMPLETED</option>
+                                                        <option value="cancelled" {{ $inv->status === 'cancelled' ? 'selected' : '' }}>CANCELLED</option>
+                                                        <option value="rescheduled" {{ $inv->status === 'rescheduled' ? 'selected' : '' }}>RESCHEDULED</option>
+                                                    </select>
+                                                </form>
                                                 @if($inv->score !== null)
-                                                    <span
-                                                        class="font-extrabold text-gray-900 block text-[11px] mt-0.5">{{ $inv->score }}
-                                                        / 100</span>
+                                                    <span class="font-extrabold text-gray-900 block text-[11px] mt-0.5">{{ $inv->score }} / 100</span>
                                                 @endif
                                             </td>
                                             <td class="px-3.5 py-2.5 text-gray-700 text-[11px]">

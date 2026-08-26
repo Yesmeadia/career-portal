@@ -64,6 +64,11 @@ class School extends Model
         return $this->hasMany(Application::class);
     }
 
+    public function transferredApplications(): HasMany
+    {
+        return $this->hasMany(Application::class, 'transferred_from_school_id');
+    }
+
     public function interviews(): HasMany
     {
         return $this->hasMany(Interview::class);

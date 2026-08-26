@@ -99,6 +99,9 @@ Route::middleware(['auth', 'role:Super Admin'])->prefix('super-admin')->name('su
     Route::patch('/applications/{application}/status', [SuperAdmin\ApplicationController::class, 'updateStatus'])->name('applications.update-status');
     Route::patch('/applications/{application}/notes', [SuperAdmin\ApplicationController::class, 'updateNotes'])->name('applications.update-notes');
     Route::post('/applications/{application}/send-email', [SuperAdmin\ApplicationController::class, 'sendEmail'])->name('applications.send-email');
+    Route::post('/applications/{application}/transfer', [SuperAdmin\ApplicationController::class, 'transfer'])->name('applications.transfer');
+    Route::get('/schools/{school}/vacancies-json', [SuperAdmin\ApplicationController::class, 'getSchoolVacancies'])->name('schools.vacancies-json');
+    Route::put('/interviews/{interview}', [SuperAdmin\ApplicationController::class, 'updateInterview'])->name('interviews.update');
 
     // Contact Inbox
     Route::get('/contact-messages', [SuperAdmin\ContactMessageController::class, 'index'])->name('contact-messages.index');

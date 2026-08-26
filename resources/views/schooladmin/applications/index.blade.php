@@ -207,6 +207,11 @@
                                                 <a href="{{ route('schooladmin.applications.show', $app) }}"
                                                     class="font-bold text-[#111827] hover:text-[#21255E] transition-colors block truncate"
                                                     style="font-size:13px;max-width:170px;">{{ $app->full_name }}</a>
+                                                @if($app->isTransferred())
+                                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase bg-amber-100 text-amber-800 border border-amber-300" title="Transferred & Recommended by Super Admin">
+                                                        Recommended
+                                                    </span>
+                                                @endif
                                             </div>
                                             <span
                                                 class="text-[11px] text-gray-400 font-mono">{{ $app->reference_no ?? $app->application_number }}</span>

@@ -19,7 +19,7 @@ class ApplicationController extends Controller
     public function index(Request $request)
     {
         $query = Application::withoutGlobalScopes()
-            ->with(['vacancy', 'school'])
+            ->with(['vacancy', 'school', 'transferredFromSchool'])
             ->latest();
 
         // Filters
@@ -80,8 +80,9 @@ class ApplicationController extends Controller
 
     public function show(Application $application)
     {
-        $application->load(['vacancy', 'school', 'interviews']);
-        return view('superadmin.applications.show', compact('application'));
+        $application->load(['vacancy', 'school', 'transferredFromSchool', 'interviews']);
+        $schools = School::where('status', 'active')->orderBy('name')->get();
+        return view('superadmin.applications.show', compact('application', 'schools'));
     }
 
     public function updateStatus(Request $request, Application $application)
@@ -179,5 +180,82 @@ class ApplicationController extends Controller
             Log::error("Direct email to candidate {$application->email} failed: " . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to send email: ' . $e->getMessage());
         }
+    }
+
+    public function transfer(Request $request, Application $application)
+    {
+        $request->validate([
+            'target_school_id' => 'required|exists:schools,id',
+            'target_vacancy_id' => 'nullable|exists:vacancies,id',
+            'recommendation_notes' => 'nullable|string|max:2000',
+        ]);
+
+        if ((int) $request->target_school_id === (int) $application->school_id) {
+            return redirect()->back()->with('error', 'Target institution must be different from the candidate\'s current institution.');
+        }
+
+        $appService = app(ApplicationService::class);
+        $appService->transferOrRecommend(
+            $application,
+            (int) $request->target_school_id,
+            $request->filled('target_vacancy_id') ? (int) $request->target_vacancy_id : null,
+            $request->recommendation_notes
+        );
+
+        $targetSchool = School::find($request->target_school_id);
+        $schoolName = $targetSchool ? $targetSchool->name : 'the target institution';
+
+        return redirect()->back()->with('success', "Application for {$application->full_name} successfully transferred & recommended to {$schoolName}.");
+    }
+
+    public function getSchoolVacancies($schoolId)
+    {
+        try {
+            $school = School::findOrFail($schoolId);
+            $vacancies = Vacancy::withoutGlobalScopes()
+                ->where('school_id', $school->id)
+                ->where('status', 'published')
+                ->orderBy('title')
+                ->get(['id', 'title', 'department_id', 'employment_type']);
+
+            return response()->json([
+                'success' => true,
+                'school' => [
+                    'id' => $school->id,
+                    'name' => $school->name,
+                ],
+                'vacancies' => $vacancies,
+            ]);
+        } catch (\Throwable $e) {
+            Log::error("Error fetching school vacancies for school #{$schoolId}: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'vacancies' => [],
+            ]);
+        }
+    }
+
+    public function updateInterview(Request $request, Interview $interview)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:scheduled,completed,cancelled,rescheduled',
+            'feedback' => 'nullable|string|max:2000',
+            'score' => 'nullable|integer|min:0|max:100',
+        ]);
+
+        $interview->update($validated);
+
+        if ($validated['status'] === 'completed' && $interview->application && $interview->application->status === 'interview_scheduled') {
+            $interview->application->update(['status' => 'interview_completed']);
+        }
+
+        ActivityLog::record(
+            "Updated interview round for candidate {$interview->application?->full_name} to status: {$validated['status']}",
+            $interview->application,
+            'applications'
+        );
+
+        return redirect()->back()->with('success', 'Interview round status updated successfully.');
     }
 }

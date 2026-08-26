@@ -12,6 +12,7 @@ interface ApplicationRepositoryInterface
     public function findByReference(string $referenceNo): ?Application;
     public function create(array $data): Application;
     public function updateStatus(Application $application, string $status, ?string $notes = null): bool;
+    public function transferOrRecommend(Application $application, int $targetSchoolId, ?int $targetVacancyId = null, ?string $recommendationNotes = null): bool;
     public function checkDuplicate(?int $vacancyId, string $email, string $phone): bool;
     public function delete(Application $application): bool;
 }

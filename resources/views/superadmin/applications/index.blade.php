@@ -183,7 +183,13 @@
                                 <td class="px-5 py-3.5 border-b border-gray-50">
                                     <p class="font-semibold text-[#111827]" style="font-size:13px;">
                                         {{ Str::limit($app->school?->name ?? 'All Campuses (General)', 28) }}</p>
-                                    <p class="text-[11px] text-gray-400 mt-0.5">{{ $app->school?->city ?? 'Central Pool' }}</p>
+                                    @if($app->isTransferred())
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 mt-1" title="Transferred from {{ $app->transferredFromSchool?->name }}">
+                                            <span class="material-symbols-outlined text-[12px]">swap_horiz</span> Transferred
+                                        </span>
+                                    @else
+                                        <p class="text-[11px] text-gray-400 mt-0.5">{{ $app->school?->city ?? 'Central Pool' }}</p>
+                                    @endif
                                 </td>
 
                                 <td class="px-5 py-3.5 border-b border-gray-50">
@@ -225,12 +231,18 @@
                                 </td>
 
                                 <td class="px-5 py-3.5 border-b border-gray-50 text-right">
-                                    <a href="{{ route('superadmin.applications.show', $app) }}"
-                                        class="inline-flex items-center gap-1.5 text-white font-bold px-3.5 py-1.5 transition-all hover:opacity-90 active:scale-95 shadow-sm"
-                                        style="background-color: #21255E; border-radius: 999px; font-size: 12px;">
-                                        <span>View</span>
-                                        <span class="material-symbols-outlined" style="font-size:14px;">arrow_forward</span>
-                                    </a>
+                                    <div class="flex items-center justify-end gap-1.5">
+                                        <a href="{{ route('superadmin.applications.show', $app) }}"
+                                            class="inline-flex items-center gap-1 text-white font-bold px-3 py-1.5 transition-all hover:opacity-90 active:scale-95 shadow-sm"
+                                            style="background-color: #21255E; border-radius: 999px; font-size: 11px;">
+                                            <span>View</span>
+                                            <span class="material-symbols-outlined" style="font-size:13px;">arrow_forward</span>
+                                        </a>
+                                        <a href="{{ route('superadmin.applications.show', $app) }}?transfer=1"
+                                            class="inline-flex items-center gap-1 bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold px-2.5 py-1.5 rounded-full hover:bg-indigo-100 transition-all text-[11px]" title="Transfer / Recommend to another campus">
+                                            <span class="material-symbols-outlined text-[13px]">swap_horiz</span> Transfer
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         @empty

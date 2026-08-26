@@ -55,6 +55,10 @@ class InterviewController extends Controller
 
         $this->interviewRepository->update($interview, $validated);
 
+        if ($validated['status'] === 'completed' && $interview->application && $interview->application->status === 'interview_scheduled') {
+            $interview->application->update(['status' => 'interview_completed']);
+        }
+
         return redirect()->back()->with('success', 'Interview feedback updated successfully.');
     }
 }
